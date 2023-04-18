@@ -46,6 +46,30 @@ juce_generate_juce_header(RNBOAudioPlugin)
 # although it doesn't really affect executable targets). Finally, we supply a list of source files
 # that will be built into the target. This is a standard CMake command.
 
+# target_sources(RNBOAudioPlugin PRIVATE
+#   "${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessor.cpp"
+#   "${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessorEditor.cpp"
+#   "${RNBO_CPP_DIR}/RNBO.cpp"
+#   ${RNBO_CLASS_FILE}
+#   src/Plugin.cpp
+#   src/CustomAudioEditor.cpp
+#   src/CustomAudioProcessor.cpp
+#   )
+
+# if (EXISTS ${RNBO_BINARY_DATA_FILE})
+#   target_sources(RNBOAudioPlugin PRIVATE ${RNBO_BINARY_DATA_FILE})
+# endif()
+
+# target_include_directories(RNBOAudioPlugin
+#   PRIVATE
+#   ${RNBO_CPP_DIR}/
+#   ${RNBO_CPP_DIR}/src
+#   ${RNBO_CPP_DIR}/common/
+#   ${RNBO_CPP_DIR}/adapters/juce/
+#   ${RNBO_CPP_DIR}/src/3rdparty/
+#   src
+# )
+
 target_sources(RNBOAudioPlugin PRIVATE
   "${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessor.cpp"
   "${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessorEditor.cpp"
@@ -54,21 +78,17 @@ target_sources(RNBOAudioPlugin PRIVATE
   src/Plugin.cpp
   src/CustomAudioEditor.cpp
   src/CustomAudioProcessor.cpp
+  ui/NewProject/Source/RootComponent.cpp
   )
 
-if (EXISTS ${RNBO_BINARY_DATA_FILE})
-  target_sources(RNBOAudioPlugin PRIVATE ${RNBO_BINARY_DATA_FILE})
-endif()
-
-target_include_directories(RNBOAudioPlugin
-  PRIVATE
-  ${RNBO_CPP_DIR}/
-  ${RNBO_CPP_DIR}/src
-  ${RNBO_CPP_DIR}/common/
-  ${RNBO_CPP_DIR}/adapters/juce/
-  ${RNBO_CPP_DIR}/src/3rdparty/
-  src
-)
+include_directories(
+  "${RNBO_CPP_DIR}/"
+  "${RNBO_CPP_DIR}/common/"
+  "${RNBO_CPP_DIR}/adapters/juce/"
+  "${RNBO_CPP_DIR}/src/3rdparty/"
+  "src"
+  "ui/NewProject/Source"
+  )
 
 # `target_compile_definitions` adds some preprocessor definitions to our target. In a Projucer
 # project, these might be passed in the 'Preprocessor Definitions' field. JUCE modules also make use
