@@ -30,12 +30,42 @@ juce_generate_juce_header(RNBOApp)
 # Finally, we supply a list of source files that will be built into the target. This is a standard
 # CMake command.
 
+# target_sources(RNBOApp
+#   PRIVATE
+#   src/Main.cpp
+#   src/MainComponent.cpp
+#   src/CustomAudioEditor.cpp
+#   src/CustomAudioProcessor.cpp
+
+#   ${RNBO_CLASS_FILE}
+
+#   ${RNBO_CPP_DIR}/RNBO.cpp
+#   ${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessorUtils.cpp
+#   ${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessorEditor.cpp
+#   ${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessor.cpp
+#   )
+
+# if (EXISTS ${RNBO_BINARY_DATA_FILE})
+#   target_sources(RNBOApp PRIVATE ${RNBO_BINARY_DATA_FILE})
+# endif()
+
+# target_include_directories(RNBOApp
+#   PRIVATE
+#   ${RNBO_CPP_DIR}/
+#   ${RNBO_CPP_DIR}/src
+#   ${RNBO_CPP_DIR}/common/
+#   ${RNBO_CPP_DIR}/adapters/juce/
+#   ${RNBO_CPP_DIR}/src/3rdparty/
+#   src
+# )
+
 target_sources(RNBOApp
   PRIVATE
   src/Main.cpp
   src/MainComponent.cpp
   src/CustomAudioEditor.cpp
   src/CustomAudioProcessor.cpp
+  ui/NewProject/Source/RootComponent.cpp
 
   ${RNBO_CLASS_FILE}
 
@@ -45,19 +75,16 @@ target_sources(RNBOApp
   ${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessor.cpp
   )
 
-if (EXISTS ${RNBO_BINARY_DATA_FILE})
-  target_sources(RNBOApp PRIVATE ${RNBO_BINARY_DATA_FILE})
-endif()
+include_directories(
+  "src"
+  "${RNBO_CPP_DIR}/"
+  "${RNBO_CPP_DIR}/src"
+  "${RNBO_CPP_DIR}/common/"
+  "${RNBO_CPP_DIR}/adapters/juce/"
+  "${RNBO_CPP_DIR}/src/3rdparty/"
+  "ui/NewProject/Source"
+  )
 
-target_include_directories(RNBOApp
-  PRIVATE
-  ${RNBO_CPP_DIR}/
-  ${RNBO_CPP_DIR}/src
-  ${RNBO_CPP_DIR}/common/
-  ${RNBO_CPP_DIR}/adapters/juce/
-  ${RNBO_CPP_DIR}/src/3rdparty/
-  src
-)
 
 target_compile_definitions(RNBOApp
   PRIVATE
