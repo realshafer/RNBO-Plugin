@@ -181,8 +181,8 @@ include_directories(
   "${RNBO_CPP_DIR}/common/"
   "${RNBO_CPP_DIR}/adapters/juce/"
   "${RNBO_CPP_DIR}/src/3rdparty/"
-  "src"
-  "ui/NewProject/Source"
+  src
+  ui/NewProject/Source
   )
 ```
 
