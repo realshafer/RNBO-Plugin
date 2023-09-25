@@ -4,16 +4,25 @@ So you want to build your own DAW or a Plugin? This template should get you star
 
 This project is based on the cross-platform JUCE framework for handling audio processing. You have the option of using JUCE to manage your UI as well. Please be aware that the JUCE has its own license terms (mostly GPL with the availability of commercial licenses). See their [website](http://www.juce.com/) for further details.
 
-## Prerequisites
+## Prerequisites (for MacOS)
 
-- Download and install [CMake](https://cmake.org/download/). Version 3.18 or higher is required. On MacOS, we recommend installing CMake with [Homebrew](https://brew.sh/)
-- Download and install [git](https://git-scm.com/downloads).
-- Some kind of build system and compiler. You have options here.
- - (MacOS) Install Xcode command line tools by running `sudo xcode-select --install` on the command line. You'll use `make` to compile your application. (You will not be able to use Xcode to build your application unless you install Xcode itself.)
- - (MacOS/Linux/Unix-like) Install [Ninja](https://github.com/ninja-build/ninja/releases), easiest way is probably `brew install ninja` or `sudo apt-get install ninja`
- - (MacOS) Download and install [Xcode](https://developer.apple.com/xcode/resources/). We have tested using Xcode 12.
- - (Windows) Download and install [Visual Studio 2019](https://visualstudio.microsoft.com/vs/). Community Edition is enough!
- - (Linux/Unix-like) use `make`, often already on your system. For debian based systems `sudo apt-get install build-essential`
+- In the MacOS Terminal, download and install [Homebrew](https://brew.sh/):
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+- Using Homebrew, download and install [CMake](https://cmake.org/download/):
+```
+brew install cmake
+```
+- Using Homebrew, download and install [git](https://git-scm.com/downloads):
+```
+brew install git
+```
+- Using Homebrew, download and install [Visual Studio Code](https://code.visualstudio.com/):
+```
+brew install --cask visual-studio-code
+```
+- Download [JUCE](https://juce.com/download/). Unzip the contents and copy it into your `Applications` folder.
 
 ## File structure
 
@@ -28,34 +37,38 @@ Some notable files/directories:
 | build/RNBOApp_artefacts/          | Your built application will end up here |
 | build/RNBOAudioPlugin_artefacts/  | Your built plugins will end up here |
 
-## Using this Template
 
-This Github repo is a template, which means you can use it to start your own git-based project using this repository as a starting point. The major difference between a template and a fork is that your new project won't include the commit history of this template--it will be an entirely new starting point. For more see [the official description](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+# STEP 1: Cloning the Repository
 
-### STEP 1: Getting Started
+If you're viewing this repo on Github, you should see a button at the top of the page that says `<> Code`. Copy the link under Clone -> HTTPS.
 
-To get started, first create a new repository to hold your project using this repository as a template. If you're viewing this repo on Github, you should see a button at the top of the page that says `Use this template`. 
+![Use this template button](./img/github-clone.png)
 
-![Use this template button](./img/use-this-template-button.png)
-
-You can also follow [the official steps](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template) on Github for creating a new repository from a template.
-
-Now you need to copy this repository locally. Follow [the official steps](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) to clone your repository. Once you've cloned your repository locally, you'll need to initialize the JUCE submodule.
+Make a local copy of this repository locally by using the following commands in Terminal:
 
 ```
-cd your-project-folder
+cd ~/Desktop #change the directory to your desktop -- alternatively choose another folder
+git clone URL #copy-paste the URL from GitHub
+```
+
+Additionally, you will need to download the linked JUCE submodule inside of the `ThirdParty` folder by using this command:
+
+```
+cd RNBO-Plugin
 git submodule update --init --recursive --progress
 ```
 
-If the above command doesn't work, check your version if git by runing `git --version`. The `--progress` flag wasn't introduced until git `2.11.0`, so if your version is earlier than this you won't have access to it. Strictly speaking you don't need that last `--progress` flag, but it's nice to have some progress indication, especially since installing the JUCE submodule can take a while. That's all you'll need to do to get set up! Now you can start exporting from RNBO and building your project.
+If the above command doesn't work, try removing the --progress flag. If it still doesn't work, try removing the --recursive flag too.
 
-### Working with RNBO and Building Your Project
+# STEP 2: Exporting Your RNBO Plugin as C++ Source Code
 
 Next, open the RNBO patcher you'd like to work with, and navigate to the export sidebar. Find "C++ Source Code Export" target.
 
 ![C++ source code export in the sidebar](./img/cpp-export-location.png)
 
-Export your project, making sure to export into the `export` folder in this directory. Your export directory should look something like this:
+Before exporting your project, set the Output Directory to the `export` folder inside `RNBO-Plugin`. Also, I highly suggest changing the Export Name to `rnbo_source.cpp` if it isn't already.
+
+Export your project. Your export directory should look something like this:
 
 ```
 export/
@@ -64,7 +77,11 @@ export/
 ├─ README.md
 ```
 
-Whenever you make a change to your RNBO patch, remember to export the source code again to update this file. Now that you've exported your RNBO code, it's time to build. This project uses CMake, which gives us the flexibility of using whatever build system we want. Start by moving to the build directory.
+Whenever you make a change to your RNBO patch, remember to export the source code again to update this file.
+
+
+# STEP 3: Build the Plugin Using CMake
+Now that you've exported your RNBO code, it's time to build. This project uses CMake, which gives us the flexibility of using whatever build system we want. Start by moving to the build directory.
 
 ```sh
 cd build
@@ -72,12 +89,9 @@ cd build
 
 Now you have a choice of what build system you want to use. Any one of the following will work:
 
-- `cmake .. -G Xcode` (create an Xcode project)
-- `cmake .. -G "Visual Studio 16"` (create a Visual Studio 2019 project)
-- `cmake .. -G Ninja` (use Ninja to build)
-- `cmake ..` (just use the default, which will be `make` on MacOS, Linux and other Unix-like platforms)
+- `cmake ..`
 
-You might be wondering which on is "best". We say, if you're familiar with Xcode or Visual Studio or Ninja, just go with that. This might be a good time to get a snack, as CMake can take a few minutes to get everything ready, especially when generating the build files for the first time. You may also see a number of warnings in the console, which you can (probably) safely ignore.
+This might be a good time to get a snack, as CMake can take a few minutes to get everything ready, especially when generating the build files for the first time. You may also see a number of warnings in the console, which you can (probably) safely ignore.
 
 Once CMake has finished generating your build system, you can finally build your project.
 
@@ -85,58 +99,313 @@ Once CMake has finished generating your build system, you can finally build your
 cmake --build .
 ```
 
-Invoking `cmake` with the `--build` flag tells CMake to build your target, using whatever build tool you chose in the last step. After the build completes, you'll find the executable result in `build/RNBOApp_artefacts/Debug`, and you'll find plugins in `build/RNBOAudioPlugin_artefacts/Debug`.
+Invoking `cmake` with the `--build` flag tells CMake to build your target. After the build completes, you'll find the executable result in `build/RNBOApp_artefacts/Debug`, and you'll find plugins in `build/RNBOAudioPlugin_artefacts/Debug`.
 
-If you're using the Xcode generator, but you don't have Xcode installed, you might see something like this when you try to build
+Load the VST into the DAW of your choice and verify that it works using the default user interface. The next steps begin to replace this default UI.
+
+
+# Step 4: Making a Custom UI in JUCE
+
+Open the Projucer, the frontend application for the JUCE Framework. Create a new project, selecting the Basic plug-in project template. Use the defaults for modules and exporters. Now we need to decide where to save the `.jucer` file. We're not really going to be using this file too much, so it might be nice to keep it isolated from the rest of our code. I'm going to make a new folder in the root of the repository called `ui`, and I'll save the JUCE project there. After creating the project, your directory structure should look something like this:
+
+```
+build/
+export/
+├─ rnbo/
+├─ rnbo_source.cpp
+├─ README.md
+img/
+patches/
+src/
+thirdparty/
+ui/
+├─ NewProject/
+├── Builds/
+├── JuceLibraryCode/
+├── Source/
+```
+
+The Projucer will automatically create four files for the PluginProcessor and PluginEditor. We won't be using these, so you can just delete them.
+
+By default the GUI editor is not enabled. You may need to enable it from the Tools menu.
+
+![](./img/tools_menu.png)
+
+From the "GUI Editor" menu, select "Add new GUI Component" to add a `.cpp` and `.h` file for your new component. I named mine `RootComponent` because it's hard to come up with a good, original name. You can call yours whatever you want. Now let's add three sliders to our component. Navigate to "Subcomponents" and right-click to add these sliders. Let's also be careful to change the name of each component. Our three parameters are called `kink1`, `kink2`, and `kink3`, so give the sliders each one of these names. Later on, we'll use this name to map each slider to the RNBO parameter with the same name.
+
+When you are done, "Save All."
+
+![](./img/named_slider.png)
+
+Now we have two main tasks ahead of us.
+
+1. Replace the default RNBO plugin UI with our custom interface.
+2. Connect our sliders to the RNBO parameters.
+
+
+# STEP 5: Switching to a Custom UI
+
+Open up Visual Studio Code. Go to File > Open Folder and select your RNBO-Plugin folder. This should load your entire code director into the left panel. You can select files here and they will open up in the center for editing.
+
+![](./img/directory_structure.png)
+
+Open up `src/CustomAudioProcessor.cpp` and modify the section at the bottom so you are using the `CustomAudioEditor`.
+
+```cpp
+AudioProcessorEditor* CustomAudioProcessor::createEditor()
+{
+    //Change this to use your CustomAudioEditor
+    return new CustomAudioEditor (this, this->_rnboObject);
+    //return RNBO::JuceAudioProcessor::createEditor();
+}
+```
+
+# Step 6: Adding the Interface to CMake
+
+First, we need to make sure that the RootComponent.cpp and RootComponent.h files get added to our project. First, add these files to `Plugin.cmake` in the repository root.
+
+```cmake
+target_sources(RNBOAudioPlugin PRIVATE
+  "${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessor.cpp"
+  "${RNBO_CPP_DIR}/adapters/juce/RNBO_JuceAudioProcessorEditor.cpp"
+  "${RNBO_CPP_DIR}/RNBO.cpp"
+  ${RNBO_CLASS_FILE}
+  src/Plugin.cpp
+  src/CustomAudioEditor.cpp
+  src/CustomAudioProcessor.cpp
+  ui/NewProject/Source/RootComponent.cpp
+  )
+
+include_directories(
+  "${RNBO_CPP_DIR}/"
+  "${RNBO_CPP_DIR}/common/"
+  "${RNBO_CPP_DIR}/adapters/juce/"
+  "${RNBO_CPP_DIR}/src/3rdparty/"
+  "src"
+  "ui/NewProject/Source"
+  )
+```
+
+# Step 7: Tell CMake to Only Make a Plugin
+
+Go to `CMakeLists.txt` and turn off the command to build an application by putting a # in front of the line:
+
+## Sidenote about setting the RNBO export name
+
+If you didn't use the RNBO export name `rnbo_source.app` previously, you can change the reference to your RNBO code inside of `CMakeLists.txt` on line 17:
+
+```cmake
+set(RNBO_CLASS_FILE_NAME "rnbo_source.cpp" CACHE STRING "the name of your rnbo class file")
+```
+
+## Test Build
+
+Re-build your plugin at this point to make sure you don't have any errors yet. In Terminal:
+
 ```sh
-% cmake --build .
-xcode-select: error: tool 'xcodebuild' requires Xcode, but active developer directory '/Library/Developer/CommandLineTools' is a command line tools instance
+cd build
+cmake ..
+cmake --build .
 ```
 
-This simply means that you need to install Xcode, and not just the command line tools.
+The plugin should build without errors, but of course we don't see our new `RootComponent` with its sliders yet. We need to add the `RootComponent` to our custom UI.
 
-## Additional Notes and Troubleshooting
+# Step 8: Adding the Custom Root Component to CustomAudioEditor
+## In the header file
+Open up `src/CustomAudioEditor.h`. First, add `RootComponent.h` to the include definitions.
 
-### Building Plugins on M1 Macs
-When building for M1 Macs, you will want to enable universal builds, so that your target can be used on both Intel and M1 macs. `CMakeLists.txt` has a line you can uncomment to enable universal builds.
-
-### Help! My DAW Won't Load My Plugin
-After building your plugin, you may find that it loads in some DAWs but not others. On MacOS, the problem is sometimes code signing. JUCE may incorrectly code sign your VST3 bundle. If you use the `codesign` tool to verify your VST3 bundle
-
-```
-codesign --verify --verbose RNBOAudioPlugin_artefacts/Release/VST3/MyPlugin.vst3
-```
-
-and you see an error like this:
-
-```
-RNBOAudioPlugin_artefacts/Release/VST3/MyPlugin.vst3: code has no resources but signature indicates they must be present
+```cpp
+#include "JuceHeader.h"
+#include "RNBO.h"
+#include "RNBO_JuceAudioProcessor.h"
+#include "RootComponent.h"
 ```
 
-you're seeing the issue. Fortunately, you can give the plugin a new, ad-hoc code signature with the following command
+Next, find the declaration for the default `_label` member variable and replace it with one for a `RootComponent` component.
 
+```cpp
+// Label                _label;
+RootComponent           _rootComponent;
 ```
-codesign --force --deep -s - RNBOAudioPlugin_artefacts/Release/VST3/MyPlugin.vst3
+## In the cpp file
+Open up `src/CustomAudioEditor.cpp`. Find the constructor, where the default label is configured and sized. Replace that code with new code to size and configure the `RootComponent`.
+
+```cpp
+CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::CoreObject& rnboObject)
+    : AudioProcessorEditor (p)
+    , _rnboObject(rnboObject)
+    , _audioProcessor(p)
+{
+    _audioProcessor->AudioProcessor::addListener(this);
+
+    // _label.setText("Hi I'm Custom Interface", NotificationType::dontSendNotification);
+    // _label.setBounds(0, 0, 400, 300);
+    // _label.setColour(Label::textColourId, Colours::black);
+    // addAndMakeVisible(_label);
+    // setSize (_label.getWidth(), _label.getHeight());
+
+    addAndMakeVisible(_rootComponent);
+    setSize(_rootComponent.getWidth(), _rootComponent.getHeight());
+}
 ```
 
-You'll see a message like:
+## Test Build
+Rebuild using CMake, and you should see the generated UI loading in place of the default custom UI.
 
+```sh
+cd build
+cmake ..
+cmake --build .
 ```
-RNBOAudioPlugin_artefacts/Release/VST3/MyPlugin.vst3: replacing existing signature
+
+# Step 9: Modifying the UI Code to Make the Sliders Functional
+To make the sliders functional, we modify `RootComponent.h` and `RootComponent.cpp`. When the sliders change, we want to update the parameters of the `AudioProcessor`. When we get a parameter change notification from the `AudioProcessor`, we want to update the sliders.
+
+## In the header file
+Open up `RootComponent.h`. At the top of the file, include these RNBO header files.
+
+```cpp
+//[Headers]     -- You can add your own extra header files here --
+#include <JuceHeader.h>
+#include "RNBO.h"
+#include "RNBO_JuceAudioProcessor.h"
+//[/Headers]
 ```
 
-Hopefully, this will resolve the issue.
+Now add the following between the `[UserMethods]` tags:
 
-### MIDI CC and VST3
-VST3 introduced some changes to the way plugins handle MIDI data. One way to make newer VST3 plugins behave more like VST2 is to create Parameters for each MIDI CC value on each MIDI channel. You can dip your toes into the [full discussion](https://forums.steinberg.net/t/vst3-and-midi-cc-pitfall/201879/11) if you want, but we disable this behavior by default. If you really want it, you can enable it by commenting out the appropriate line in `CMakeLists.txt`.
+```cpp
+//[UserMethods]     -- You can add your own custom methods in this section.
+void setAudioProcessor(RNBO::JuceAudioProcessor *p);
+void updateSliderForParam(unsigned long index, double value);
+//[/UserMethods]
+```
 
-### Working with your Unity Plugin
-You may have noticed that `Plugin.cmake` is currently set up to build you a Unity plugin. If you'd like more a little information on using that Plugin in Unity, check out our [starter guide](UNITY.md).
+Also add the following private instance variables
+```cpp
+//[UserVariables]   -- You can add your own custom variables in this section.
+RNBO::JuceAudioProcessor *processor = nullptr;
+HashMap<int, Slider *> slidersByParameterIndex; // used to map parameter index to slider we want to control
+//[/UserVariables]
+```
+## In the cpp file
+Now let's implement `setAudioProcessor`. Open up `RootComponent.cpp` and add the following after `[MiscUserCode]`.
 
-## Customizing the Project
+```cpp
+//[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
+void RootComponent::setAudioProcessor(RNBO::JuceAudioProcessor *p)
+{
+    processor = p;
 
-This project is based on the [JUCE Framework](http://www.juce.com/). Please refer to tutorials from JUCE on building UIs, for instance.
+    RNBO::ParameterInfo parameterInfo;
+    RNBO::CoreObject& coreObject = processor->getRnboObject();
 
-There are details that you might want to change in `App.cmake` for Applications and in `Plugin.cmake` for Plugins.
+    for (unsigned long i = 0; i < coreObject.getNumParameters(); i++) {
+        auto parameterName = coreObject.getParameterId(i);
+        RNBO::ParameterValue value = coreObject.getParameterValue(i);
+        Slider *slider = nullptr;
+        if (juce::String(parameterName) == juce__slider.get()->getName()) {
+            slider = juce__slider.get();
+        } else if (juce::String(parameterName) == juce__slider2.get()->getName()) {
+            slider = juce__slider2.get();
+        } else if (juce::String(parameterName) == juce__slider3.get()->getName()) {
+            slider = juce__slider3.get();
+        }
 
-If you're not interested in the Application or Plugin parts of this project you can remove the associated *include* lines from the `CMakeLists.txt` file.
+        if (slider) {
+            slidersByParameterIndex.set(i, slider);
+            coreObject.getParameterInfo(i, &parameterInfo);
+            slider->setRange(parameterInfo.min, parameterInfo.max);
+            slider->setValue(value);
+        }
+    }
+}
+
+void RootComponent::updateSliderForParam(unsigned long index, double value)
+{
+    if (processor == nullptr) return;
+    RNBO::CoreObject& coreObject = processor->getRnboObject();
+    auto denormalizedValue = coreObject.convertFromNormalizedParameterValue(index, value);
+    auto slider = slidersByParameterIndex.getReference((int) index);
+    if (slider && (slider->getThumbBeingDragged() == -1)) {
+        slider->setValue(denormalizedValue, NotificationType::dontSendNotification);
+    }
+}
+//[/MiscUserCode]
+```
+
+Notice how we use the name of the slider to map the slider to a parameter with the matching ID. While we were here, we also laid the groundwork for updating the sliders with the correct values using the 'updateSliderForParam' code.
+
+Continuing in `RootComponent.cpp`, find the function called `sliderValueChanged` and update it as follows:
+
+```cpp
+void RootComponent::sliderValueChanged (juce::Slider* sliderThatWasMoved)
+{
+    //[UsersliderValueChanged_Pre]
+    if (processor == nullptr) return;
+    RNBO::CoreObject& coreObject = processor->getRnboObject();
+    auto parameters = processor->getParameters();
+    //[/UsersliderValueChanged_Pre]
+
+    if (sliderThatWasMoved == juce__slider.get())
+    {
+        //[UserSliderCode_juce__slider] -- add your slider handling code here..
+        //[/UserSliderCode_juce__slider]
+    }
+    else if (sliderThatWasMoved == juce__slider2.get())
+    {
+        //[UserSliderCode_juce__slider2] -- add your slider handling code here..
+        //[/UserSliderCode_juce__slider2]
+    }
+    else if (sliderThatWasMoved == juce__slider3.get())
+    {
+        //[UserSliderCode_juce__slider3] -- add your slider handling code here..
+        //[/UserSliderCode_juce__slider3]
+    }
+
+    //[UsersliderValueChanged_Post]
+    RNBO::ParameterIndex index = coreObject.getParameterIndexForID(sliderThatWasMoved->getName().toRawUTF8());
+    if (index != -1) {
+        const auto param = processor->getParameters()[index];
+        auto newVal = sliderThatWasMoved->getValue();
+
+        if (param && param->getValue() != newVal)
+        {
+            auto normalizedValue = coreObject.convertToNormalizedParameterValue(index, newVal);
+            param->beginChangeGesture();
+            param->setValueNotifyingHost(normalizedValue);
+            param->endChangeGesture();
+        }
+    }
+    //[/UsersliderValueChanged_Post]
+}
+```
+
+This is all we need to control the RNBO patch using the sliders in our custom UI. However, to be really complete, we should also make sure that the sliders will update if RNBO changes the value of a parameter internally.
+
+
+# Step 10: Updating Slider Values from the CustomAudioEditor
+
+We'll need to call `setAudioProcessor` from the `CustomAudioEditor`. Open `CustomAudioEditor.cpp` and add the following line:
+
+```cpp
+_rootComponent.setAudioProcessor(p); // <--- add this line
+addAndMakeVisible(_rootComponent);
+setSize(_rootComponent.getWidth(), _rootComponent.getHeight());
+```
+
+Add the following to `audioProcessorParameterChanged`.
+
+```cpp
+void CustomAudioEditor::audioProcessorParameterChanged (AudioProcessor*, int parameterIndex, float value)
+{
+    _rootComponent.updateSliderForParam(parameterIndex, value);
+}
+```
+
+## Test Build
+That's it. Compile and build. You may need to restart your DAW in in order to see changes to your plugin.
+
+
+# Step 11: The Continuing Development Process
+Now that you've built a plugin with a custom UI, you will likely want to refine it. From this point, you can continue updating your RNBO code and then exporting it to the 'export' folder. You can continue refining your UI by working in the Projucer's GUI Editor, saving the resulting RootComponent.h and .cpp files. The manual changes to those files should be preserved as you update the UI (if not, you will have to remake those manual changes in Step 9). Re-build the plugin often to make sure you didn't introduce any breaking changes. Good luck!
