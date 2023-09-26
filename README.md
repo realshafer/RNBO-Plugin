@@ -81,7 +81,7 @@ Whenever you make a change to your RNBO patch, remember to export the source cod
 
 
 # STEP 3: Build the Plugin Using CMake
-Now that you've exported your RNBO code, it's time to build. This project uses CMake, which gives us the flexibility of using whatever build system we want. Start by moving to the build directory.
+Now that you've exported your RNBO code, it's time to build. This project uses CMake, which gives us the flexibility of using whatever build system we want. Start by moving to the build directory:
 
 ```sh
 cd build
@@ -151,7 +151,7 @@ Open up Visual Studio Code. Go to File > Open Folder and select your RNBO-Plugin
 
 ![](./img/directory_structure.png)
 
-Open up `src/CustomAudioProcessor.cpp` and modify the section at the bottom so you are using the `CustomAudioEditor`.
+Open up `src/CustomAudioProcessor.cpp` and modify the section at the bottom so you are using the `CustomAudioEditor`:
 
 ```cpp
 AudioProcessorEditor* CustomAudioProcessor::createEditor()
@@ -164,7 +164,7 @@ AudioProcessorEditor* CustomAudioProcessor::createEditor()
 
 # Step 6: Adding the Interface to CMake
 
-First, we need to make sure that the RootComponent.cpp and RootComponent.h files get added to our project. First, add these files to `Plugin.cmake` in the repository root.
+First, we need to make sure that the RootComponent.cpp and RootComponent.h files get added to our project. First, add these files to `Plugin.cmake` in the repository root:
 
 ```cmake
 target_sources(RNBOAudioPlugin PRIVATE
@@ -190,7 +190,11 @@ include_directories(
 
 # Step 7: Tell CMake to Only Make a Plugin
 
-Go to `CMakeLists.txt` and turn off the command to build an application by putting a # in front of the line:
+Go to line 57 of `CMakeLists.txt` and turn off the command to build an application by putting a # in front of the line:
+
+```cmake
+# include(${CMAKE_CURRENT_LIST_DIR}/App.cmake)
+```
 
 ## Sidenote about setting the RNBO export name
 
@@ -214,7 +218,7 @@ The plugin should build without errors, but of course we don't see our new `Root
 
 # Step 8: Adding the Custom Root Component to CustomAudioEditor
 ## In the header file
-Open up `src/CustomAudioEditor.h`. First, add `RootComponent.h` to the include definitions.
+Open up `src/CustomAudioEditor.h`. First, add `RootComponent.h` to the include definitions:
 
 ```cpp
 #include "JuceHeader.h"
@@ -223,14 +227,14 @@ Open up `src/CustomAudioEditor.h`. First, add `RootComponent.h` to the include d
 #include "RootComponent.h"
 ```
 
-Next, find the declaration for the default `_label` member variable and replace it with one for a `RootComponent` component.
+Next, find the declaration for the default `_label` member variable and replace it with one for a `RootComponent` component:
 
 ```cpp
 // Label                _label;
 RootComponent           _rootComponent;
 ```
 ## In the cpp file
-Open up `src/CustomAudioEditor.cpp`. Find the constructor, where the default label is configured and sized. Replace that code with new code to size and configure the `RootComponent`.
+Open up `src/CustomAudioEditor.cpp`. Find the constructor, where the default label is configured and sized. Replace that code with new code to size and configure the `RootComponent`:
 
 ```cpp
 CustomAudioEditor::CustomAudioEditor (RNBO::JuceAudioProcessor* const p, RNBO::CoreObject& rnboObject)
@@ -264,7 +268,7 @@ cmake --build .
 To make the sliders functional, we modify `RootComponent.h` and `RootComponent.cpp`. When the sliders change, we want to update the parameters of the `AudioProcessor`. When we get a parameter change notification from the `AudioProcessor`, we want to update the sliders.
 
 ## In the header file
-Open up `RootComponent.h`. At the top of the file, include these RNBO header files.
+Open up `RootComponent.h`. At the top of the file, include these RNBO header files:
 
 ```cpp
 //[Headers]     -- You can add your own extra header files here --
@@ -283,7 +287,7 @@ void updateSliderForParam(unsigned long index, double value);
 //[/UserMethods]
 ```
 
-Also add the following private instance variables
+Also add the following private instance variables:
 ```cpp
 //[UserVariables]   -- You can add your own custom variables in this section.
 RNBO::JuceAudioProcessor *processor = nullptr;
@@ -291,7 +295,7 @@ HashMap<int, Slider *> slidersByParameterIndex; // used to map parameter index t
 //[/UserVariables]
 ```
 ## In the cpp file
-Now let's implement `setAudioProcessor`. Open up `RootComponent.cpp` and add the following after `[MiscUserCode]`.
+Now let's implement `setAudioProcessor`. Open up `RootComponent.cpp` and add the following after `[MiscUserCode]`:
 
 ```cpp
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
@@ -396,7 +400,7 @@ addAndMakeVisible(_rootComponent);
 setSize(_rootComponent.getWidth(), _rootComponent.getHeight());
 ```
 
-Add the following to `audioProcessorParameterChanged`.
+Add the following to `audioProcessorParameterChanged`:
 
 ```cpp
 void CustomAudioEditor::audioProcessorParameterChanged (AudioProcessor*, int parameterIndex, float value)
