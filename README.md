@@ -87,9 +87,11 @@ Now that you've exported your RNBO code, it's time to build. This project uses C
 cd build
 ```
 
-Now you have a choice of what build system you want to use. Any one of the following will work:
+Use CMake to generate your build files:
 
-- `cmake ..`
+```sh
+cmake ..
+```
 
 This might be a good time to get a snack, as CMake can take a few minutes to get everything ready, especially when generating the build files for the first time. You may also see a number of warnings in the console, which you can (probably) safely ignore.
 
