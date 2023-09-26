@@ -1,8 +1,5 @@
-# RNBO JUCE Examples
-
-So you want to build your own DAW or a Plugin? This template should get you started with your own Standalone Desktop application and Audio Plugin, using the source code export feature of RNBO, part of [Max 8](https://cycling74.com/max8/) made by [Cycling '74](https://cycling74.com/). 
-
-This project is based on the cross-platform JUCE framework for handling audio processing. You have the option of using JUCE to manage your UI as well. Please be aware that the JUCE has its own license terms (mostly GPL with the availability of commercial licenses). See their [website](http://www.juce.com/) for further details.
+# STEP 0: Introduction
+This guide is heavily borrowed from Cycling '74's [RNBO JUCE Example](https://github.com/Cycling74/rnbo.example.juce) and their [Making a Custom UI](https://github.com/Cycling74/rnbo.example.juce/blob/main/CUSTOM_UI.md) document. I have ordered and simplified the content of those pages here with the goal of making it easier to build a VST with a custom user interface on MacOS. If you run into issues following the instruction, please refer to the official documents.
 
 ## Prerequisites (for MacOS)
 
@@ -23,19 +20,6 @@ brew install git
 brew install --cask visual-studio-code
 ```
 - Download [JUCE](https://juce.com/download/). Unzip the contents and copy it into your `Applications` folder.
-
-## File structure
-
-The source code of the application is in the `src/` directory. This directory should contain everything that you need to modify to build your application.
-
-Some notable files/directories:
-
-| Location                          | Explanation   |
-| --------------------------------- | ------------- |
-| export/                           | The directory into which you should export your RNBO code |
-| src/                              | Source for the project - feel free to edit (includes sample UI) |
-| build/RNBOApp_artefacts/          | Your built application will end up here |
-| build/RNBOAudioPlugin_artefacts/  | Your built plugins will end up here |
 
 
 # STEP 1: Cloning the Repository
@@ -106,7 +90,7 @@ Invoking `cmake` with the `--build` flag tells CMake to build your target. After
 Load the VST into the DAW of your choice and verify that it works using the default user interface. The next steps begin to replace this default UI.
 
 
-# Step 4: Making a Custom UI in JUCE
+# STEP 4: Making a Custom UI in JUCE
 
 Open the Projucer, the frontend application for the JUCE Framework. Create a new project, selecting the Basic plug-in project template. Use the defaults for modules and exporters. Now we need to decide where to save the `.jucer` file. We're not really going to be using this file too much, so it might be nice to keep it isolated from the rest of our code. I'm going to make a new folder in the root of the repository called `ui`, and I'll save the JUCE project there. After creating the project, your directory structure should look something like this:
 
@@ -162,7 +146,7 @@ AudioProcessorEditor* CustomAudioProcessor::createEditor()
 }
 ```
 
-# Step 6: Adding the Interface to CMake
+# STEP 6: Adding the Interface to CMake
 
 First, we need to make sure that the RootComponent.cpp and RootComponent.h files get added to our project. First, add these files to `Plugin.cmake` in the repository root:
 
@@ -188,7 +172,7 @@ include_directories(
   )
 ```
 
-# Step 7: Tell CMake to Only Make a Plugin
+# STEP 7: Tell CMake to Only Make a Plugin
 
 Go to line 57 of `CMakeLists.txt` and turn off the command to build an application by putting a # in front of the line:
 
@@ -216,7 +200,7 @@ cmake --build .
 
 The plugin should build without errors, but of course we don't see our new `RootComponent` with its sliders yet. We need to add the `RootComponent` to our custom UI.
 
-# Step 8: Adding the Custom Root Component to CustomAudioEditor
+# STEP 8: Adding the Custom Root Component to CustomAudioEditor
 ## In the header file
 Open up `src/CustomAudioEditor.h`. First, add `RootComponent.h` to the include definitions:
 
@@ -264,7 +248,7 @@ cmake ..
 cmake --build .
 ```
 
-# Step 9: Modifying the UI Code to Make the Sliders Functional
+# STEP 9: Modifying the UI Code to Make the Sliders Functional
 To make the sliders functional, we modify `RootComponent.h` and `RootComponent.cpp`. When the sliders change, we want to update the parameters of the `AudioProcessor`. When we get a parameter change notification from the `AudioProcessor`, we want to update the sliders.
 
 ## In the header file
@@ -390,7 +374,7 @@ void RootComponent::sliderValueChanged (juce::Slider* sliderThatWasMoved)
 This is all we need to control the RNBO patch using the sliders in our custom UI. However, to be really complete, we should also make sure that the sliders will update if RNBO changes the value of a parameter internally.
 
 
-# Step 10: Updating Slider Values from the CustomAudioEditor
+# STEP 10: Updating Slider Values from the CustomAudioEditor
 
 We'll need to call `setAudioProcessor` from the `CustomAudioEditor`. Open `CustomAudioEditor.cpp` and add the following line:
 
@@ -413,5 +397,5 @@ void CustomAudioEditor::audioProcessorParameterChanged (AudioProcessor*, int par
 That's it. Compile and build. You may need to restart your DAW in in order to see changes to your plugin.
 
 
-# Step 11: The Continuing Development Process
+# Epilogue: The Continuing Development Process
 Now that you've built a plugin with a custom UI, you will likely want to refine it. From this point, you can continue updating your RNBO code and then exporting it to the 'export' folder. You can continue refining your UI by working in the Projucer's GUI Editor, saving the resulting RootComponent.h and .cpp files. The manual changes to those files should be preserved as you update the UI (if not, you will have to remake those manual changes in Step 9). Re-build the plugin often to make sure you didn't introduce any breaking changes. Good luck!
