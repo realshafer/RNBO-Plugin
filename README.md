@@ -1,4 +1,4 @@
-# STEP 0: Introduction
+# Prologue: Before You Start
 This guide is heavily borrowed from Cycling '74's [RNBO JUCE Example](https://github.com/Cycling74/rnbo.example.juce) and their [Making a Custom UI](https://github.com/Cycling74/rnbo.example.juce/blob/main/CUSTOM_UI.md) document. I have ordered and simplified the content of those pages here with the goal of making it easier to build a VST with a custom user interface on MacOS. If you run into issues following the instruction, please refer to the official documents.
 
 ## Prerequisites (for MacOS)
