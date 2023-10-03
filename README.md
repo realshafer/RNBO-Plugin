@@ -19,7 +19,7 @@ brew install git
 ```
 brew install --cask visual-studio-code
 ```
-- Download [JUCE](https://juce.com/download/). Unzip the contents and copy it into your `Applications` folder.
+- Download [JUCE](https://juce.com/download/). Use 7.0.5 at this time to avoid a bug with slider resizing. Unzip the contents and copy it into your `Applications` folder.
 
 
 # STEP 1: Cloning the Repository
@@ -171,6 +171,12 @@ include_directories(
   ui/NewProject/Source
   )
 ```
+## Sidenote about VST effects vs instruments
+Got to line 24 to switch between a VST effect or instrument
+
+```cmake
+IS_SYNTH FALSE    # will make it an effect
+IS_SYNTH TRUE     # will make it an instrument
 
 # STEP 7: Tell CMake to Only Make a Plugin
 
