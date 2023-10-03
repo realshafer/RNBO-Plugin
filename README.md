@@ -177,6 +177,7 @@ Got to line 24 to switch between a VST effect or instrument
 ```cmake
 IS_SYNTH FALSE    # will make it an effect
 IS_SYNTH TRUE     # will make it an instrument
+```
 
 # STEP 7: Tell CMake to Only Make a Plugin
 
