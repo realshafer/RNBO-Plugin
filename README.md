@@ -172,7 +172,7 @@ include_directories(
   )
 ```
 ## Sidenote about VST effects vs instruments
-Got to line 24 to switch between a VST effect or instrument
+Go to line 24 to switch between a VST effect or instrument
 
 ```cmake
 IS_SYNTH FALSE    # will make it an effect
