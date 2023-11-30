@@ -21,6 +21,9 @@ brew install --cask visual-studio-code
 ```
 - Download [JUCE](https://juce.com/download/). Use 7.0.5 at this time to avoid a bug with slider resizing. Unzip the contents and copy it into your `Applications` folder.
 
+## Prerequisites (for Windows)
+- Install [Microsoft Visual Studio 2022 - Community Edition (https://visualstudio.microsoft.com/vs/community/)]
+- As part of the install process, choose "Desktop Development with C++"
 
 # STEP 1: Cloning the Repository
 
